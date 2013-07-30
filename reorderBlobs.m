@@ -19,7 +19,7 @@ for j = 1:numel(oldPidx)
         if(k == numel(Pidx))
            fprintf('cant find matching roots')
            csvwrite('RESULT',13)
-           exit
+           return
         end
     end
 end

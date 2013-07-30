@@ -11,12 +11,14 @@ for i = 1:size(cdir,1)
     [pathstr, name{i}, ext] = fileparts(cdir(i).name);
     if( ~( strcmp(ext,'.TIF') || strcmp(ext,'.TIFF') || strcmp(ext,'.tif') || strcmp(ext,'.tiff') ))
         badidx = [badidx, i];
+    elseif( isempty(str2num(name{i}))   )
+        badidx = [badidx, i];
     end
 end
 
 %remove non images
 cdir(badidx) = [];
-
+n = [];
 %sort
 for i = 1:size(cdir,1)        
     [pathstr, name{i}, ext] = fileparts(cdir(i).name);

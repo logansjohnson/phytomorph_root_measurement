@@ -73,7 +73,7 @@ for i =  PCAwind:-10:(PCAwind-60)
         if(i==(PCAwind-60))
             % window is too small...give up
             csvwrite('RESULT',11)
-            exit
+            return
         end
     end
 end

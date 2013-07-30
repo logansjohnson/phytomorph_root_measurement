@@ -1,4 +1,4 @@
-function [thisML thiscurv thiscurvgood] = prepOutput(saveMidline, saveDeriv, saveCurvature, res)
+function [thisML thiscurv thiscurvgood failed] = prepOutput(saveMidline, saveDeriv, saveCurvature, res)
 % prepOutput prepares datastructure for writing outputs
 %
 % saveMidline : boolean...obvious
@@ -9,7 +9,7 @@ function [thisML thiscurv thiscurvgood] = prepOutput(saveMidline, saveDeriv, sav
 % thisML : prepared midline
 % thiscurv : prepared curvature
 % thiscurvgood : prepared first derivative
-
+failed = 0;
 thisML = {};
 thiscurv = {};
 thiscurvgood = {};
@@ -27,15 +27,18 @@ if(saveMidline)
             end
             thisML{ii} = zeros( maxlen,(size(res{ii}.Mline,2)*2));
             for i = 1:2:(size(res{ii}.Mline,2)*2)
-                thisMLlen = size(res{ii}.Mline{i},1);
-                thisML{ii}( 1:thisMLlen ,i:(i+1)) = res{ii}.Mline{i};
+                i
+                ceil(i/2)
+                thisMLlen = size(res{ii}.Mline{ceil(i/2)},1);
+                thisML{ii}( 1:thisMLlen ,i:(i+1)) = res{ii}.Mline{ceil(i/2)};
             end   
         end
    catch Exp
          fprintf(['EXP.identifier = ' Exp.identifier])
          fprintf(['EXP.message = ' Exp.message])
          csvwrite('RESULT',9);
-         exit       
+         failed = 1; 
+         return       
    end
     
     
@@ -61,7 +64,8 @@ if(saveDeriv)
          fprintf(['EXP.identifier = ' Exp.identifier])
          fprintf(['EXP.message = ' Exp.message])
          csvwrite('RESULT',9);
-         exit
+         failed = 1;
+         return
     end
 end
 
@@ -84,7 +88,8 @@ if(saveCurvature)
          fprintf(['EXP.identifier = ' Exp.identifier])
          fprintf(['EXP.message = ' Exp.message])
          csvwrite('RESULT',9);
-         exit
+         failed = 1;
+         return
     end
 end
 

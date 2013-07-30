@@ -48,7 +48,7 @@ rtWidth = rtWidth * scale;
 
 PCAwind = round((rtWidth * 4)/10)*10;
 close = rtWidth * 4;
-SPUR=round(rtWidth*(5/6));
+SPUR=round(  round(rtWidth*(5/6))  * 1.4  );
 DILATEERODE = round(rtWidth/2);
 CLIP = round(rtWidth*(10/3));
 WINDOWSIZE = round(rtWidth*(8/3));
@@ -58,22 +58,22 @@ filterCount = 3;
 try 
     [cdir] = sortImages(InPath);
 catch Exp
-    csvwrite('RESULT',1)
-    exit
+    csvwrite([InPath filesep 'RESULT'],1)
+    return
 end
 
 
 ALLBVO = {};
 ALLBV = {};
 for i = 1:size(cdir,1)
-    
-    fprintf(num2str(i))
+
+    fprintf([num2str(i) '-'])
 
     try
         [P Pidx SZ] = isolateRoots(close,[InPath cdir(i).name],minPix4Root2, filterSize, filterCount);
     catch Exp
-        csvwrite('RESULT',12)
-        exit
+        csvwrite([InPath filesep 'RESULT'],12)
+        return
     end
     
     % If we are on the first image, we can't match the roots to the old img
@@ -83,7 +83,7 @@ for i = 1:size(cdir,1)
        numRoots = numel(Pidx);
     end
     if(numel(Pidx) ~= numRoots)
-        exit
+        return
         %Break, new root in ith image or one disapeered... 
     end
     
@@ -106,7 +106,16 @@ for i = 1:size(cdir,1)
         % setup binary of single root.    
 
         [thisI, boundbox] = cropBlob(SZ, P(Pidx(j)).PixelIdxList, PCAwind);
-
+        onEdge = checkEdge(thisI);
+        if(onEdge)
+            res{j}.TangB = [res{j}.TangB; -999];
+            res{j}.Rlen = [res{j}.Rlen; -1];
+            res{j}.tipCoords = [res{j}.tipCoords; [-1,-1]];
+            res{j}.curv{i} = [-999];
+            res{j}.curvgood{i} = [-999];
+            res{j}.Mline{i} = [-999, -999];
+            continue
+        end
         try
             
             %Get measurements
@@ -120,14 +129,23 @@ for i = 1:size(cdir,1)
             res{j}.curvgood{i} = CURVGOOD;
             res{j}.Mline{i} = Mline;
             
+
+            
             if(saveImage)
-                imwrite(IOUT, ['MLOUT_' num2str(j) '_' cdir(i).name])
+                imwrite(IOUT, [InPath filesep 'MLOUT_' num2str(j) '_' cdir(i).name])
             end
-        catch Exp
-            csvwrite('RESULT',8)
+        catch Exp            
+            res{j}.TangB = [res{j}.TangB; -999];
+            res{j}.Rlen = [res{j}.Rlen; -1];
+            res{j}.tipCoords = [res{j}.tipCoords; [-1,-1]];
+            res{j}.curv{i} = [-999];
+            res{j}.curvgood{i} = [-999];
+            res{j}.Mline{i} = [-999, -999];
+            
+            csvwrite([InPath filesep 'RESULT'],8)
             fprintf(['EXP.identifier = ' Exp.identifier])
             fprintf(['EXP.message = ' Exp.message])
-            exit       
+            return       
         end
             
         
@@ -135,38 +153,40 @@ for i = 1:size(cdir,1)
     
     
 end
-
-[thisML thiscurv thiscurvgood] = prepOutput(saveMidline, saveDeriv, saveCurvature, res);
-
+fprintf(['\n'])
+[thisML thiscurv thiscurvgood failed] = prepOutput(saveMidline, saveDeriv, saveCurvature, res);
+if(failed)
+    return
+end
 % Write measurement csvs
 try
     for ii = 1:size(res,2)
          if(saveAngle)
-            csvwrite(['./angle_' num2str(ii) '.csv'],res{ii}.TangB)
+            csvwrite([InPath filesep 'angle_' num2str(ii) '.csv'],res{ii}.TangB)
          end
          if(saveLength)
-             csvwrite(['./lengthML_' num2str(ii) '.csv'],res{ii}.Rlen)
+             csvwrite([InPath filesep 'lengthML_' num2str(ii) '.csv'],res{ii}.Rlen)
          end
          if(saveTip)
-             csvwrite(['./tip_' num2str(ii) '.csv'],res{ii}.tipCoords)
+             csvwrite([InPath filesep 'tip_' num2str(ii) '.csv'],res{ii}.tipCoords)
          end
          if(saveDeriv)
-             csvwrite(['./curvature_' num2str(ii) '.csv'],thiscurv{ii})
+             csvwrite([InPath filesep 'curvature_' num2str(ii) '.csv'],thiscurv{ii})
          end
          if(saveCurvature)
-             csvwrite(['./curvatureGOOD_' num2str(ii) '.csv'],thiscurvgood{ii})
+             csvwrite([InPath filesep 'curvatureGOOD_' num2str(ii) '.csv'],thiscurvgood{ii})
          end
          if(saveMidline)
-             csvwrite(['./midline_' num2str(ii) '.csv'],thisML{ii})
+             csvwrite([InPath filesep 'midline_' num2str(ii) '.csv'],thisML{ii})
          end
     end
 catch Exp
      fprintf(['EXP.identifier = ' Exp.identifier])
      fprintf(['EXP.message = ' Exp.message])
-     csvwrite('RESULT',5);
-     exit
+     csvwrite([InPath filesep 'RESULT'],5);
+     return
 end
-csvwrite('RESULT',0);
+csvwrite([InPath filesep 'RESULT'],0);
 
 
 

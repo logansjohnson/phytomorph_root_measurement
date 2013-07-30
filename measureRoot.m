@@ -20,7 +20,7 @@ function [TangB Rlen Mline tipCoords CURV CURVGOOD IOUT ALLBVO ALLBV] = measureR
 % tipCoords: 1 by 2 vector of XY coordinates of the root tip
 % CURV : Curvature along midline
 % CURVGOOD: angle of midline along the midline
-% IOUT : Image of midline overlayed on binary
+% IOUT : Image of midline overlaid on binary
 % ALLBVO : Cellarray of original basis vectors
 % ALLBV : Cellarray of adjusted basis vectors
 
@@ -56,7 +56,7 @@ catch Exp
      fprintf(['EXP.identifier = ' Exp.identifier])
      fprintf(['EXP.message = ' Exp.message])
      csvwrite('RESULT',14);
-     exit
+     return
 end
 
 %Draw new midline
