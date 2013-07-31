@@ -11,7 +11,7 @@ function [TIP] = tipFinder(I,CLIP)
 
 II = zeros(size(I));
 
-%Find an edge pixel to do a boundary trace.
+% Find an edge pixel to do a boundary trace
 II(:,1) = 1;
 II(1,:) = 1;
 II(:,end) = 1;
@@ -22,14 +22,14 @@ startidx = startidx(1);
 startcoord = getCoords(startidx,size(I));
 B = bwtraceboundary(I,startcoord,'S');          
 
-%remove pixels on edge of image
+% Remove pixels on edge of image
 B(find(B(:,1) == 1),:) = [];
 B(find(B(:,2) == 1),:) = [];
 B(find(B(:,1) == size(I,1)),:) = [];
 B(find(B(:,2) == size(I,2)),:) = [];
 
 
-% get the curvature along the boundary
+% Get the curvature along the boundary
 idx = find(B(:,1) == 1);
 B(idx,:) = [];
 C1 = cwt(B(:,1),[25],'gaus2');

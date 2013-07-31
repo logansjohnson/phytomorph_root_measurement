@@ -1,5 +1,5 @@
 function [x y t] = addPhantom(x, y, t, dups)
-% addPhantom adds pohantom knots to the coeffiecients dups number of times 
+% addPhantom adds phantom knots to the coeffiecients dups number of times 
 %   to the start and end
 %
 % x : x coefficients
@@ -12,7 +12,7 @@ function [x y t] = addPhantom(x, y, t, dups)
 % t : resulting t coefficients
 
 
-% Add's phantom knots onto the coefs for a spline fit.
+% Adds phantom knots onto the coefficients for a spline fit
 xstart = ((x(1)-x(2)) + x(1));
 xend = ((x(end)-x(end-1)) + x(end));
 ystart = ((y(1)-y(2)) + y(1));

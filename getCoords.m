@@ -1,6 +1,6 @@
 function [coords] = getCoords(P, SZ)  
 % getCoords takes a N by 1 matrix of matrix indices and returns a N by 2
-%   matrix of xy coords based on the size of the matrix
+%   matrix of xy coordinates based on the size of the matrix
 %
 % P : N by 1 matrix of indices
 % SZ : 1 by 2 vector indicating dimensions of matrix to index into

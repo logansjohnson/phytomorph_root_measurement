@@ -13,19 +13,19 @@ function [] = multiRootMediumRes(InPath,rtWidth,scale,saveAngle, saveLength, sav
 cpstring = 'Copyright (c) 2013,  Logan Scott Johnson\n All rights reserved.\n \n Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:\n \n     Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.\n     Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.\n     Neither the name of the University of Wisconsin, Madison nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.\n \n THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n';
 fprintf(cpstring);
 
-% multiRootMediumRes takes multiple measurements on multiple roots in a time series of tifs
-%   It should work on a unix type environment with MATLAB R2011b or maybe greater
+% multiRootMediumRes takes multiple measurements on multiple roots in a time series of tifs.
+%   It should work on a unix type environment with MATLAB R2011b or maybe greater.
 %
-% InPath : file path to image sequence (may need trailing slash)  unix
+% InPath : File path to image sequence (may need trailing slash),  unix
 %           style pathing only.  It looks for numerically named 'tif',
-%           'TIF', 'tiff' or 'TIFF's.  It then sorts them numerically.  If
-%           the file name not including the extension is not numeric it
+%           'TIF', 'tiff', or 'TIFF's.  It then sorts them numerically.  If
+%           the file name, not including the extension, is not numeric, it
 %           will not work.
-% rtWidth : root width in pixels
-% scale : scaling factor for a single dimension (Will cause recalulation of
-%           constants)  The algorithm will scale the image by this factor
+% rtWidth : Root width in pixels
+% scale : Scaling factor for a single dimension (will cause recalulation of
+%           constants).  The algorithm will scale the image by this factor
 %           before doing any calculations on it.  It will also recalculate
-%           rtWidth so make sure to consider that.
+%           rtWidth, so make sure to consider that.
 % saveAngle : boolean...obvious
 % saveLength : boolean...obvious
 % saveTip : boolean...obvious
@@ -35,9 +35,9 @@ fprintf(cpstring);
 % saveImage : boolean...obvious
 
 
-%For the sample data set the following two inputs should be used.
-%rtWidth = 15;
-%scale = 1;
+% For the sample data set the following two inputs should be used
+% rtWidth = 15;
+% scale = 1;
 
 rtWidth = round(rtWidth);
 
@@ -76,7 +76,7 @@ for i = 1:size(cdir,1)
         return
     end
     
-    % If we are on the first image, we can't match the roots to the old img
+    % If we are on the first image, we can't match the roots to the old image
     if(i==1)
        oldP = P;
        oldPidx = Pidx;
@@ -84,14 +84,14 @@ for i = 1:size(cdir,1)
     end
     if(numel(Pidx) ~= numRoots)
         return
-        %Break, new root in ith image or one disapeered... 
+        % Break, new root in ith image or one disappeared
     end
     
     [Pidx] = reorderBlobs(oldPidx, Pidx,oldP,P);
     
-    %For each root
+    % For each root
     for j = 1:numel(Pidx)
-        % Setup Data structures
+        % Setup data structures
         if( (i==1))
             res{j}.TangB = [];
             res{j}.Rlen = [];
@@ -103,7 +103,7 @@ for i = 1:size(cdir,1)
             ALLBV{j} = {};
         end
         
-        % setup binary of single root.    
+        % Setup binary of single root   
 
         [thisI, boundbox] = cropBlob(SZ, P(Pidx(j)).PixelIdxList, PCAwind);
         onEdge = checkEdge(thisI);
@@ -118,10 +118,10 @@ for i = 1:size(cdir,1)
         end
         try
             
-            %Get measurements
+            % Get measurements
             [TangB  Rlen Mline tipCoords CURV CURVGOOD  IOUT ALLBVO ALLBV] = measureRoot(thisI,boundbox,PCAwind,ALLBVO,ALLBV,i,j, DILATEERODE, SPUR,CLIP,WINDOWSIZE);
  
-            % store measurements and write annotated image.
+            % Store measurements and write annotated image
             res{j}.TangB = [res{j}.TangB; TangB];
             res{j}.Rlen = [res{j}.Rlen; Rlen];
             res{j}.tipCoords = [res{j}.tipCoords; tipCoords];

@@ -1,15 +1,15 @@
 function [P Pidx SZ] = isolateRoots(close,I,minPix4Root2, filterSize, filterCount)
-% isolateRoots reads an image and segments it returning the regionprops
+% isolateRoots reads an image and segments it, returning the regionprops
 %   PixelIndexList, and the indices to it indicating it is reasonable.
 %
-% close : size of greyscale filtering disc
-% I : file path to the image
-% minPix4Root2 : minimum number of pixels to label a blob as good
-% filterSize : size of binary filtering disc
-% filterCount : number of times to filter greyscale
+% close : Size of grayscale filtering disc
+% I : File path to the image
+% minPix4Root2 : Minimum number of pixels to label a blob as good
+% filterSize : Size of binary filtering disc
+% filterCount : Number of times to filter grayscale
 %
 % P : regionprops PixelIndexList of segmented blobs
-% Pidx : indices to P of good blobs
+% Pidx : Indices to P of good blobs
 % SZ : 1 by 2 vector indicating size of image
 
 % Read image, get info
@@ -18,7 +18,7 @@ I = I(2:(end-1),2:(end-1));
 SZ = size(I);
 I2 = I;
 
-%filter filterCount times
+% Filter filterCount times
 for i = 1:filterCount
     BK = imclose(I2,strel('disk',close));
     I2 = double(I2) - double(BK);
@@ -34,18 +34,18 @@ end
 level = graythresh(uint8(I2));
 I3 = ~im2bw(I2, level);
 
-% Filter Binary
+% Filter binary
 I3 = imdilate(I3,strel('disk',filterSize));
 I3 = imerode(I3,strel('disk',filterSize));
 I3 = imfill(I3,'holes');
 
-% Find Blobs
+% Find blobs
 L = bwlabel(I3);
 
-% Eliminate Bad Blobs
+% Eliminate bad blobs
 P = regionprops(L,'Area', 'PixelIdxList','BoundingBox');
 idx = find([P.Area] > minPix4Root2); % Too small
-%Check edge intersection
+% Check edge intersection
 Z = zeros(size(I));
 Z(1,:) = 1;
 Z(end,:) = 1;

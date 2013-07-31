@@ -1,13 +1,13 @@
 function [SIM U BV L COEFFS ERR] = PCA_FIT(M,COM)
-% PCA_FIT does pca fitting to find the angle of the input
+% PCA_FIT does PCA fitting to find the angle of the input
 %
-% M : matrix
-% COM : number of vectors to return
+% M : Matrix
+% COM : Number of vectors to return
 %
 % BV : Basis vectors
 % others unused
 
-%Principal Component analysis used for measuring angle of blob
+% Principal Component Analysis used for measuring angle of blob
 U = mean(M,1);
 for i = 1:size(M,1)
     M(i,:) = M(i,:) - U;
@@ -16,7 +16,7 @@ end
 COV = cov(M);
 [BV L] = eigs(double(COV),COM);
 COEFFS = M*BV;
-% create the simulated signal
+% Create the simulated signal
 SIM = (BV*COEFFS')';
 for i = 1:size(SIM,1)
     SIM(i,:) = SIM(i,:) + U;

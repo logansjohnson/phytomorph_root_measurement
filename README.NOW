@@ -1,16 +1,16 @@
 Note: Image Processing Toolbox and Wavelet Toolbox are required.
 
 'multiRootMediumRes' expects a directory which contains files with
-'tif', 'tiff', 'TIF' or 'TIFF' as an extension.  These files prefix
-must only be numerical and correlate with timing of capture.
+'tif', 'tiff', 'TIF' or 'TIFF' as an extension.  The prefix's for these 
+files must only be numerical and correlate with timing of capture.
 
 'multiMultiRootMediumRes' expects a directory which contains many
 directories that could be passed to 'multiRootMediumRes'.
 
-multiRootMediumRes is the main function, it accepts a number of
-arguments including input path, root width, scale and a number of
+multiRootMediumRes is the main function; it accepts a number of
+arguments including input path, root width, scale, and a number of
 output flags.  Root width is the root width in pixels, scale is used
-to transform the image before processing, it also alters root width.
+to transform the image before processing and also alters root width.
 The following measurements can be flagged for output.
 
 Angle of root tip
@@ -24,23 +24,23 @@ Original basis vectors of root tip
 Adjusted basis vectors of root tip
 
 The general flow of the software is as follows.  Function 'sortImages'
-searches the input path for tif's that have a numeric file name, it
+searches the input path for tif's that have a numeric file name; it
 then returns a listing similar to 'dir'.  This function can be edited
 to accommodate other image types or naming schemes.  The main loop
 then begins, looping in order from the listing returned by
-'sortImages'. 'isolateRoots' reads an image, segments and filters it
+'sortImages'. 'isolateRoots' reads an image, segments, and filters it
 returning the 'regionprops' structures 'Area', 'PixelIdxList' and
 'BoundingBox' along with the indices it believes are objects of
 interest.  The 'regionprops' structure is then reordered to correlate
 with previous images in the time series.  We then loop through each
-object of interest.  It is first cropped, double checked that it is a
-valid root, and then it is measured in the function 'measureRoot',
+object of interest.  It is first cropped, double-checked that it is a
+valid root, and then is measured in the function 'measureRoot',
 with the results being stored in a data structure named 'res'.
 
 Function 'measureRoot' begins by doing some filtering on the binary
 image to remove small imperfections that may interfere with
-measurement such as root hairs.  We then skeletonize the binarized
-image, cleaning off any forks, and then completing the non forking
+measurement, such as root hairs.  We then skeletonize the binarized
+image, cleaning off any forks, and then complete the non-forking
 skeleton to the calculated root tip (discussed next) and the center of
 the intersection of the object of interest and the edge of the image.
 The root tip is calculated in 'tipFinder' by boundary tracing a patch
@@ -49,7 +49,7 @@ starting at a point on the intersection of the object of interest and
 the edge of the patch.  The curvature is then calculated for the
 boundary trace not including pixels on the intersection of the object
 of interest and the edge of the patch.  A section of the curvature is
-then clipped off and the point of peak curvature is marked to be the
+then clipped off, and the point of peak curvature is marked to be the
 tip.  The midline is approximated in 'smoothML' using a custom spline
 fitting algorithm involving special knotting techniques to control
 accuracy near the ends of the spline (especially the tip end).

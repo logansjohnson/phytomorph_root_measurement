@@ -1,17 +1,17 @@
 function [ML, CURV,angOnCurv, newCS] = smoothML(CS, BI, tipCoords)
-% smooth ML Smooths the midline using parametric spline fitting with 
+% smoothML smooths the midline using parametric spline fitting with 
 %   phantom knots and bound knots
 %
-% CS : clean skeleton
+% CS : Clean skeleton
 % BI : Binarized image of root
 % tipCoords: 1 by 2 vector of XY coordinates of the root tip
 %
 % ML : N by 2 matrix of XY coordinates of the midline
 % CURV : Curvature along midline
-% angOnCurv : angle of midline along the midline
-% newCS : new clean skeleton after smoothing the midline
+% angOnCurv : Angle of midline along the midline
+% newCS : New clean skeleton after smoothing the midline
 
-%find tip end and do some prep
+% Find tip end and do some prep
 warning off all
 SZSZ = size(CS);
 keepCS = CS;
@@ -27,7 +27,7 @@ ends = find( (and(sumN == 2, CS == 1)) );
 CS(ind) = 1;
 L =  bwlabel(CS);
 
-% find non tip end and prep some matrices
+% Find non tip end and prep some matrices
 P = regionprops(L,'Area','PixelIdxList','BoundingBox');
 BB = ceil(P(1).BoundingBox);
 if(BB(1)<1)
@@ -65,7 +65,7 @@ otherend = getCoords(otherend,SZ);
 
 
 
-%Convert to x=f(t) and y=f(t)
+% Convert to x=f(t) and y=f(t)
 curr = getCoords(ends(1),SZ);
 prev = -1;
 t = [0];
@@ -106,7 +106,7 @@ while(1)
 end
 
 
-%Add the tip coordinates if they are not yet at the beggining 
+% Add the tip coordinates if they are not yet at the beginning 
 if(   ~((x(1) == tipCoords(2)) && y(1) == tipCoords(1)   ))
     x = [tipCoords(2) x];
     y = [tipCoords(1) y];
@@ -114,7 +114,7 @@ if(   ~((x(1) == tipCoords(2)) && y(1) == tipCoords(1)   ))
 end
 
 
-%find range of t
+% Find range of t
 tt = [];
 ttsum = 0;
 for i = 1:numel(t)
@@ -123,10 +123,10 @@ for i = 1:numel(t)
 end
 
 
-% add phantom coords
+% Add phantom coordinates
 [x y tt] = addPhantom(x,y,tt,1);
 
-% interpolate and filter to a constant dif(t)
+% Interpolate and filter to a constant dif(t)
 interper = (  tt(1)):1:(tt(end));
 yinterp = interp1(tt,y,interper);
 xinterp = interp1(tt,x,interper);
@@ -134,19 +134,19 @@ h = fspecial('average', [1,round(numel(xinterp)*.05)]);
 yinterp2 = imfilter(yinterp,h,'symmetric');
 xinterp2 = imfilter(xinterp,h,'symmetric');
 
-% prep the input to spline fitting, add coefs and knots
+% Prep the input to spline fitting, add coefs and knots
 skip = 1:round(numel(yinterp2)*.02 ) :numel(yinterp2);
 coefs = [yinterp2(skip); xinterp2(skip)];
 knots = addKnots(interper(skip),6,6);
 coefs = addCoefs(coefs,3,3);
 
-% calculate spline
+% Calculate spline
 sp = spmak(knots,coefs);
 pp = fn2fm(sp,'pp');
 toeval = pp.breaks(1):.1:pp.breaks(end);
 v = ppval(pp,toeval);
 
-%find tip and end t's
+% Find tip and end t's
 vy = v(1,:);
 vx = v(2,:);
 tvx1 = abs(vx - tipCoords(2));
@@ -176,24 +176,24 @@ vddx = vdd(2,:);
 
 
 newCS = zeros(size(CSorig));
-%HERE WE FILL IN MIDLINE IMAGE
+% Here we fill in midline image
 for i = 1:numel(v(2,:))
     try
         if(round(v(1,i))>size(newCS,1))
-            % DO NOTHING
+            % Do nothing
         elseif(round(v(2,i))>size(newCS,2))
-            % DO NOTHING           
+            % Do nothing           
         else
             newCS(round(v(1,i)),round(v(2,i))) = 1;
         end
     catch exp
-        % DO NOTHING estimated point out of range.
+        % Do nothing, estimated point out of range
     end
 end
 
 
 
-%FIX MIDLINE TO BE spur free, spur 1
+% Fix midline to be spur free, spur 1
 BI2 = padarray(newCS,[1 1]);
 BI2 = bwmorph(BI2,'skel',inf);
 BI2 = bwmorph(BI2,'spur',1);
@@ -201,7 +201,7 @@ BI2 = bwmorph(BI2,'skel',inf);
 newCS = BI2(2:end-1,2:end-1);
 
 
-%extract smoothed ML COORDS
+% Extract smoothed midline coordinates
 newCS = newCS(2:(end-1),2:(end-1)); %adjust for padding
 newCS2 = zeros(SZSZ);
 newCS2(BB(2):(BB(2)+BB(4)),BB(1):(BB(1)+BB(3))) = newCS;
@@ -218,14 +218,14 @@ for i = 1:numel(ML)
 end
 ML = MLC;
 
-%Calculate curvature while we are at it.
+% Calculate curvature while we are at it
 CURV = [];
 for i = 1:numel(toeval)
     ttmp = ( ( ( vdx((i)) * vddy((i)) ) - ( vdy((i)) * vddx((i)) ) )  / ( ( ( vdx((i))^2 ) + ( vdy((i))^2 ) ) ^ 1.5 ) );    
     CURV = [CURV,  ttmp];    
 end
 
-%calculate the angle on the curv at each t
+% Calculate the angle on the curv at each t
 angOnCurv = atan2(vdy,vdx);
 
 end

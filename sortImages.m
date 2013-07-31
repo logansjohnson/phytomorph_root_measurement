@@ -1,9 +1,9 @@
 function [cdir] = sortImages(InPath)
 
-% sortImages uses MATLAB dir function and returns a datastructure in the
-%   same formate but with only tiffs.
+% sortImages uses MATLAB dir function and returns a data structure in the
+%   same format but with only tiffs.
 
-%Find image files in dir
+% Find image files in dir
 cdir = dir(InPath);
 cdir([cdir.isdir]) = [];
 badidx = [];
@@ -16,10 +16,10 @@ for i = 1:size(cdir,1)
     end
 end
 
-%remove non images
+% Remove non images
 cdir(badidx) = [];
 n = [];
-%sort
+% Sort
 for i = 1:size(cdir,1)        
     [pathstr, name{i}, ext] = fileparts(cdir(i).name);
     if(strcmp(ext,'.TIF') || strcmp(ext,'.TIFF') || strcmp(ext,'.tif') || strcmp(ext,'.tiff') )

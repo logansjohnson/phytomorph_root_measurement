@@ -1,21 +1,21 @@
 function [thisML thiscurv thiscurvgood failed] = prepOutput(saveMidline, saveDeriv, saveCurvature, res)
-% prepOutput prepares datastructure for writing outputs
+% prepOutput prepares data structure for writing outputs
 %
 % saveMidline : boolean...obvious
 % saveDeriv : boolean...obvious
 % saveCurvature : boolean...obvious
-% res : results datastructure
+% res : Results data structure
 %
-% thisML : prepared midline
-% thiscurv : prepared curvature
-% thiscurvgood : prepared first derivative
+% thisML : Prepared midline
+% thiscurv : Prepared curvature
+% thiscurvgood : Prepared first derivative
 failed = 0;
 thisML = {};
 thiscurv = {};
 thiscurvgood = {};
 
 
-%Prep midlines for output
+% Prep midlines for output
 if(saveMidline)
    try
         for ii = 1:size(res,2)
@@ -44,7 +44,7 @@ if(saveMidline)
     
 end
 
-%Prep curvature for output
+% Prep curvature for output
 if(saveDeriv)
     try
         for ii = 1:size(res,2)

@@ -3,9 +3,9 @@ function [tipEndIdx] = getTipEnd(tipCoords, SZ, ends)
 %
 % tipCoords : 1 by 2 or 2 by 1 vector of xy coordinates
 % SZ : 1 by 2 vector indicating dimensions of matrix to index from
-% ends : matrix indexes to search
+% ends : Matrix indices to search
 %
-% tipEndIdx : index to matrix which is closest to tipCoords
+% tipEndIdx : Index to matrix which is closest to tipCoords
 
 endsCoords = [];
 for i = 1:numel(ends)

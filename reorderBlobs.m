@@ -1,12 +1,12 @@
 function [Pidx] = reorderBlobs(oldPidx, Pidx,oldP,P)
-% reorderBlobs orders a regionprops PixelIdxList datastructure based on
-% another regionprops PixelIdxList datastructure based on intersections
-% of pixel indices
+% reorderBlobs orders a regionprops PixelIdxList data structure based on
+% another regionprops PixelIdxList data structure based on intersections
+% of pixel indices.
 %
-% Pidx : regionprops PixelIdxList datastructure to reorder
-% oldPidx : regionprops PixelIdxList datastructure to base reordering on
+% Pidx : regionprops PixelIdxList data structure to reorder
+% oldPidx : regionprops PixelIdxList data structure to base reordering on
 %
-% Pidx : reorder datastructure
+% Pidx : reorder data structure
 
 newOrder = [];
 for j = 1:numel(oldPidx)

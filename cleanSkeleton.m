@@ -10,7 +10,7 @@ function [CS] = cleanSkeleton(BI, SPUR)
 % Estimate midline using skeletonization
 BI = padarray(BI,[1 1]);
 BI = bwmorph(BI,'skel',inf);
-%S = BI(2:end-1,2:end-1); %orig skeleton
+%S = BI(2:end-1,2:end-1); % Original skeleton
 % Remove spurs
 BI = bwmorph(BI,'spur',SPUR);
 BI = bwmorph(BI,'skel',inf);
@@ -36,11 +36,11 @@ BI = padarray(CSorig,[1 1]);
 
 BI = bwmorph(BI,'spur',1);
 BI = bwmorph(BI,'skel',inf);
-CS = BI(3:end-2,3:end-2); %orig clean skel
+CS = BI(3:end-2,3:end-2); % Original clean skeleton
 
 
 
-% relabel CS as largest connected piece of skeleton.
+% Relabel CS as largest connected piece of skeleton
 L = bwlabel(CS,8);
 R = regionprops(L,'Area','PixelIdxList');
 [big,bigIdx] = max([R.Area]);

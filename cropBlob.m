@@ -1,8 +1,8 @@
 function [thisI, boundbox] = cropBlob(SZ, P, PCAwind ) 
-% cropBlob takes in a regionprops PixelIndexList, size of the image and a
+% cropBlob takes in a regionprops PixelIndexList, size of the image, and a
 %   dilating constant.  It returns a cropped patch of the image that leaves
 %   extra room on the edges by dialating the binary with a large filter.
-%   It also returns a regionprops BoundingBox used to crop the image
+%   It also returns a regionprops BoundingBox used to crop the image.
 %
 % SZ : 1 by 2 vector indicating dimensions of the image
 % P : regionprops PixelIndexList of the binary image in non structure
@@ -14,7 +14,7 @@ function [thisI, boundbox] = cropBlob(SZ, P, PCAwind )
 thisI = zeros(SZ);
 thisI(P) = 1; 
 
-% dilate binary, find boundary, crop
+% Dilate binary, find boundary, crop
 SESZ = PCAwind * 2;
 dI = imdilate(thisI, strel('disk',SESZ));
 L =  bwlabel(dI);

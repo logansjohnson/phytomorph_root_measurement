@@ -1,9 +1,9 @@
 function [ALLBVO, ALLBV, TangB ] = PCAwrap(PCAwind, tipCoords,BI, ALLBVO, ALLBV,jjj, iii )
-% PCAwrap does pca window shrinking and angle fixing to measure the angle
+% PCAwrap does PCA window shrinking and angle fixing to measure the angle
 %   of the root tip.
 % 
-% PCAwind : constant used to determine the size of the crop we use when
-%   fitting PC's
+% PCAwind : Constant used to determine the size of the crop we use when
+%   fitting principal components
 % tipCoords : 1 by 2 vector of XY coordinates of the root tip
 % BI : Binary image of root
 % ALLBVO : Cellarray of original basis vectors
@@ -17,13 +17,13 @@ function [ALLBVO, ALLBV, TangB ] = PCAwrap(PCAwind, tipCoords,BI, ALLBVO, ALLBV,
 
 
 
-% sample tip and PCA binary image.
+% Sample tip and PCA binary image
 for i =  PCAwind:-10:(PCAwind-60)
     try
         
         
         NNN = i + 1;                                            % n-hood size of the tip patch                              
-        HHH =(NNN-1)/2;                                         % width of the hood size
+        HHH =(NNN-1)/2;                                         % Width of the hood size
         [n1 n2] = ndgrid(-HHH:HHH,-HHH:HHH);
         n1 = reshape(n1,[1 numel(n1)]);
         n2 = reshape(n2,[1 numel(n2)]);
@@ -34,7 +34,7 @@ for i =  PCAwind:-10:(PCAwind-60)
         fidxGOOD = find(S & radi);
         [SIM U BV LV C ERR] = PCA_FIT(V(:,fidxGOOD)',2);       % PCA fit the tip       
         ALLBVO{jjj}{end+1} = BV;        
-        if(iii == 1) %If its the first image, we know how to flip the angle to make it look nice
+        if(iii == 1) % If its the first image, we know how to flip the angle to make it look nice
             if(BV(1,2) < 0 )
                 TangB = (atan2(-BV(1,1),-BV(1,2))*180/pi)*-1; 
                 ALLBV{jjj}{end+1} = -BV;
@@ -43,20 +43,20 @@ for i =  PCAwind:-10:(PCAwind-60)
                 ALLBV{jjj}{end+1} = BV;
             end
         else
-             %Flip angle to make it look nice
+             % Flip angle to make it look nice
              ttbv = ALLBV{jjj}{iii-1};              
              log1 = ( abs(ttbv(1,2) + BV(1,2))  <   abs(ttbv(1,2) + -BV(1,2)) );  
              log2 = (abs(ttbv(1,1) + BV(1,1))  <   abs(ttbv(1,1) + -BV(1,1)) );
-             log3 = (BV(1,1) < 0) && (ttbv(1,1) >= 0); %true if dif sign 1st neg
-             log4 = (BV(1,2) < 0) && (ttbv(1,2) >= 0);%true if dif sign 2nd neg
-             log5 = (BV(1,1) >= 0) && (ttbv(1,1) < 0); %true if dif signs 1st pos
-             log6 = (BV(1,2) >= 0) && (ttbv(1,2) < 0); %true if dif signs 2nd pos
+             log3 = (BV(1,1) < 0) && (ttbv(1,1) >= 0); % True if dif sign 1st neg
+             log4 = (BV(1,2) < 0) && (ttbv(1,2) >= 0); % True if dif sign 2nd neg
+             log5 = (BV(1,1) >= 0) && (ttbv(1,1) < 0); % True if dif signs 1st pos
+             log6 = (BV(1,2) >= 0) && (ttbv(1,2) < 0); % True if dif signs 2nd pos
              log7 = log3 || log5;
              log8 = log4 || log6;
-             log9 = (log7 && log8); %true if both BV's changed sign...
+             log9 = (log7 && log8); % True if both BV's changed sign
              log10 = (log9 && (log1 || log2)) || (log1 && log2); 
-             nlog1 = abs(ttbv(1,2) + -BV(1,2)) + abs(ttbv(1,1) + -BV(1,1)); %cost of not flipping
-             nlog2 = abs(ttbv(1,2) + BV(1,2)) + abs(ttbv(1,1) + BV(1,1)) ; %cost of flipping
+             nlog1 = abs(ttbv(1,2) + -BV(1,2)) + abs(ttbv(1,1) + -BV(1,1)); % Cost of not flipping
+             nlog2 = abs(ttbv(1,2) + BV(1,2)) + abs(ttbv(1,1) + BV(1,1)) ; % Cost of flipping
              log11 = nlog1 > nlog2;
              log10 = (log9 && (log1 || log2)) || (log11); 
              if( log10)
@@ -67,11 +67,11 @@ for i =  PCAwind:-10:(PCAwind-60)
                 ALLBV{jjj}{end+1} = BV;
              end              
         end
-        %If we got here we did it!
+        % If we got here we did it!
         break
     catch Exp
         if(i==(PCAwind-60))
-            % window is too small...give up
+            % Window is too small...give up
             csvwrite('RESULT',11)
             return
         end

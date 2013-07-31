@@ -1,9 +1,9 @@
 function [S Q] = sample_rcn(r,c,I,W)
-% sample_rcn samples an matix patch and returns it and the reshaped version
+% sample_rcn samples a matix patch and returns it and the reshaped version
 
 % r : row
 % c : column
-% I : Image
+% I : image
 % W : width
 % 
 % S : each row is an element of dim3
@@ -12,7 +12,7 @@ function [S Q] = sample_rcn(r,c,I,W)
 SE = strel('square',W);                 % make square of size W
 [d1 d2] = getneighbors(SE);             % get nhood
 RAD = (W-1)/2;                          % half square value
-I = padarray(I,[RAD RAD],0);            % padd array
+I = padarray(I,[RAD RAD],0);            % pad array
 S = [];                 
 Q = [];
 for p = 1:size(r,1)

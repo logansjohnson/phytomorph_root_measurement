@@ -1,6 +1,6 @@
 function [P] = getIdx(coords, SZ)
 % getIdx takes a N by 2 matrix of xy coordinates and returns a N by 1
-%   matrix of matrix indexes based on the size of the matrix
+%   matrix of matrix indices based on the size of the matrix
 %
 % coords : N by 2 matrix of xy coordinates
 % SZ : 1 by 2 vector indicating dimensions of matrix to index into

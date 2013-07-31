@@ -3,23 +3,23 @@ function [TangB Rlen Mline tipCoords CURV CURVGOOD IOUT ALLBVO ALLBV] = measureR
 %
 % I : Binarized image of root
 % boundbox : regionprops BoundingBox used to crop the image
-% PCAwind : constant used to determine the size of the crop we use when
-%   fitting PC's
+% PCAwind : Constant used to determine the size of the crop we use when
+%   fitting principal components
 % ALLBVO : Cellarray of original basis vectors
 % ALLBV : Cellarray of adjusted basis vectors
 % jjj : jjjth image
 % iii : iiith root
-% DILATEERODE : constant used to clean the binary image
-% SPUR : constant used to despur and clean skeleton
-% CLIP : constant used to find the tip
-% WINDOWSIZE : constant for completeskeleton
+% DILATEERODE : Constant used to clean the binary image
+% SPUR : Constant used to despur and clean skeleton
+% CLIP : Constant used to find the tip
+% WINDOWSIZE : Constant for completeSkeleton
 %
 % TangB : Angle of root tip
 % Rlen : Length of approximate midline (trust little)
 % Mline : N by 2 matrix of XY coordinates of the midline
 % tipCoords: 1 by 2 vector of XY coordinates of the root tip
 % CURV : Curvature along midline
-% CURVGOOD: angle of midline along the midline
+% CURVGOOD: Angle of midline along the midline
 % IOUT : Image of midline overlaid on binary
 % ALLBVO : Cellarray of original basis vectors
 % ALLBV : Cellarray of adjusted basis vectors
@@ -38,18 +38,18 @@ BI = I;
 BI = imerode(BI,strel('disk',DILATEERODE,0));
 BI = imdilate(BI,strel('disk',DILATEERODE,0));
 
-%special spur removal
+% Special spur removal
 [CS] = cleanSkeleton(BI, SPUR);
 
-%now we redraw from end of skel to the edge.
-[CS, tipCoords] = completeSkelton(BI, CS, CLIP, WINDOWSIZE);
+% Now we redraw from end of skeleton to the edge
+[CS, tipCoords] = completeSkeleton(BI, CS, CLIP, WINDOWSIZE);
 
 
-%now we have an approx midline.
+% Now we have an approximate midline
 %PREP for smoothing ML.
 [CS] = removeLineSpurs(CS);
 
-%SMOOTH MidLine
+% Smooth midline
 try 
      [Mline, CURVGOOD,CURV, newCS] = smoothML(CS,BI,tipCoords);
 catch Exp
@@ -59,12 +59,12 @@ catch Exp
      return
 end
 
-%Draw new midline
+% Draw new midline
 [IOUT] = drawImageFromCoords(Mline,BI);
 
 Rlen = size(Mline,1);
 
-%adjust midline for bounding box
+% Adjust midline for bounding box
 for i = 1:size(Mline,1)
     Mline(i,:) = [ (Mline(i,1) + boundbox.ulxy(1)), (Mline(i,2) + boundbox.ulxy(2))];    
 end

@@ -1,7 +1,7 @@
 function [coefs] = addCoefs(coefs,numbeg,numend)
-% addCoefs replicates coefiecients on both ends
+% addCoefs replicates coeffiecients on both ends
 %
-% coefs : N by M matrix of Coeeficients
+% coefs : N by M matrix of coefficients
 % numbeg : Number to replicate at the start
 % numend : Number to replicate at the end
 %

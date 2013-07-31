@@ -1,11 +1,11 @@
 function [CS] = removeLineSpurs(CS)
 % removeLineSpurs takes and returns a matrix representing a binary image of 
 %   a skeleton and removes all the spurs and also removes extra pixels that
-%   would violate the 2 neigbor rule.
+%   would violate the 2 neighbor rule.
 
 BI2 = padarray(CS,[1 1]);
 BI2 = bwmorph(BI2,'skel',inf);
-S2 = BI2(2:end-1,2:end-1); %orig skeleton
+S2 = BI2(2:end-1,2:end-1); % original skeleton
 BI2 = bwmorph(BI2,'spur',1);
 BI2 = bwmorph(BI2,'skel',inf);
 CS = BI2(2:end-1,2:end-1);
